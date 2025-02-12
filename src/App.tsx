@@ -168,7 +168,7 @@ const App: React.FC = () => {
 
       <div className="input-group">
         <label>
-          Codeium Core Discount (%):
+          Discount (%):
           <input
             type="number"
             min="0"
