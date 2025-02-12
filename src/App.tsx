@@ -4,28 +4,38 @@ interface Product {
   name: string;
   cascadeListPrice: number;
   codeiumCoreListPrice: number;
+  cascadeQuotaAttainment: number;
+  codeiumCoreQuotaAttainment: number;
 }
 
 const products: Product[] = [
   {
     name: 'Cloud Flow Entry',
     cascadeListPrice: 44.00,
-    codeiumCoreListPrice: 29.00
+    codeiumCoreListPrice: 29.00,
+    cascadeQuotaAttainment: 14.00,
+    codeiumCoreQuotaAttainment: 29.00
   },
   {
     name: 'Cloud Flow Standard',
     cascadeListPrice: 99.00,
-    codeiumCoreListPrice: 29.00
+    codeiumCoreListPrice: 29.00,
+    cascadeQuotaAttainment: 29.00,
+    codeiumCoreQuotaAttainment: 29.00
   },
   {
     name: 'Hybrid Flow Entry',
     cascadeListPrice: 44.00,
-    codeiumCoreListPrice: 39.00
+    codeiumCoreListPrice: 39.00,
+    cascadeQuotaAttainment: 14.00,
+    codeiumCoreQuotaAttainment: 39.00
   },
   {
     name: 'Hybrid Flow Standard',
     cascadeListPrice: 99.00,
-    codeiumCoreListPrice: 39.00
+    codeiumCoreListPrice: 39.00,
+    cascadeQuotaAttainment: 29.00,
+    codeiumCoreQuotaAttainment: 39.00
   }
 ];
 
@@ -48,7 +58,7 @@ const formatCurrency = (amount: number): string => {
 
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
-  const [units, setUnits] = useState<number>(0);
+  const [users, setUsers] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [termLength, setTermLength] = useState<number>(12); // Default to annual
   const [revenue, setRevenue] = useState<{
@@ -56,57 +66,66 @@ const App: React.FC = () => {
       monthly: number;
       term: number;
       annual: number;
+      quotaAttainment: number;
     };
     codeiumCoreRevenue: {
       monthly: number;
       term: number;
       annual: number;
+      quotaAttainment: number;
       discountAmount: number;
     };
     totalRevenue: {
       monthly: number;
       term: number;
       annual: number;
+      quotaAttainment: number;
     };
   } | null>(null);
 
   const calculateRevenue = () => {
     const discountMultiplier = 1 - (discount / 100);
     
-    // Calculate Cascade revenue (no discount)
-    const monthlyCascadeRevenue = units * selectedProduct.cascadeListPrice;
+    // Calculate Cascade revenue and quota attainment (no discount)
+    const monthlyCascadeRevenue = users * selectedProduct.cascadeListPrice;
+    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment;
     
-    // Calculate Codeium Core revenue (with discount)
-    const baseMonthlyCodeiumRevenue = units * selectedProduct.codeiumCoreListPrice;
+    // Calculate Codeium Core revenue and quota attainment (with discount)
+    const baseMonthlyCodeiumRevenue = users * selectedProduct.codeiumCoreListPrice;
     const discountedMonthlyCodeiumRevenue = baseMonthlyCodeiumRevenue * discountMultiplier;
     const monthlyDiscountAmount = baseMonthlyCodeiumRevenue - discountedMonthlyCodeiumRevenue;
+    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment;
 
-    // Calculate total monthly revenue
+    // Calculate total monthly revenue and quota attainment
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
+    const totalQuotaAttainment = cascadeQuotaAttainment + codeiumCoreQuotaAttainment;
 
     setRevenue({
       cascadeRevenue: {
         monthly: monthlyCascadeRevenue,
         term: monthlyCascadeRevenue * termLength,
-        annual: monthlyCascadeRevenue * 12
+        annual: monthlyCascadeRevenue * 12,
+        quotaAttainment: cascadeQuotaAttainment
       },
       codeiumCoreRevenue: {
         monthly: discountedMonthlyCodeiumRevenue,
         term: discountedMonthlyCodeiumRevenue * termLength,
         annual: discountedMonthlyCodeiumRevenue * 12,
+        quotaAttainment: codeiumCoreQuotaAttainment,
         discountAmount: monthlyDiscountAmount * termLength
       },
       totalRevenue: {
         monthly: monthlyTotalRevenue,
         term: monthlyTotalRevenue * termLength,
-        annual: monthlyTotalRevenue * 12
+        annual: monthlyTotalRevenue * 12,
+        quotaAttainment: totalQuotaAttainment
       }
     });
   };
 
   return (
     <div className="container">
-      <h1>Revenue Calculator</h1>
+      <h1>Quota Attainment</h1>
       
       <div className="input-group">
         <label>
@@ -129,12 +148,12 @@ const App: React.FC = () => {
 
       <div className="input-group">
         <label>
-          Number of Units:
+          Number of Users:
           <input
             type="number"
             min="0"
-            value={units}
-            onChange={(e) => setUnits(Number(e.target.value))}
+            value={users}
+            onChange={(e) => setUsers(Number(e.target.value))}
           />
         </label>
       </div>
@@ -172,13 +191,14 @@ const App: React.FC = () => {
 
       {revenue && (
         <div className="result">
-          <h2>Revenue Breakdown</h2>
+          <h2>Revenue and Quota Attainment</h2>
           <div className="details">            
             <div className="product-revenue">
               <h4>Cascade Revenue</h4>
               <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.cascadeRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.cascadeRevenue.annual)}</p>
+              <p className="quota-attainment">Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
             </div>
 
             <div className="product-revenue">
@@ -186,6 +206,7 @@ const App: React.FC = () => {
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.codeiumCoreRevenue.annual)}</p>
+              <p className="quota-attainment">Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
               <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
             </div>
 
@@ -194,6 +215,7 @@ const App: React.FC = () => {
               <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.totalRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.totalRevenue.annual)}</p>
+              <p className="quota-attainment">Total Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}</p>
             </div>
           </div>
         </div>

@@ -170,6 +170,14 @@ button:hover {
   border-top: 1px dashed #eee;
 }
 
+.product-revenue p.quota-attainment {
+  color: #2563eb;
+  font-weight: 500;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
 .product-revenue p::after {
   content: "";
   flex: 1;
@@ -181,4 +189,15 @@ button:hover {
 .product-revenue p.discount::after {
   border-bottom-style: dashed;
   border-bottom-color: #fbd5d5;
+}
+
+.product-revenue p.quota-attainment::after {
+  border-bottom-style: dashed;
+  border-bottom-color: #bfdbfe;
+}
+
+.product-revenue.total p.quota-attainment {
+  color: #1e40af;
+  font-weight: 600;
+  font-size: 1.1em;
 }
