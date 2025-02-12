@@ -89,14 +89,17 @@ const App: React.FC = () => {
     const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * termLength;
     const quotaDiscountAmount = monthlyDiscountAmount * termLength;
 
-    // Calculate total monthly revenue and quota attainment
+    // Calculate total monthly revenue
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
     const termTotalRevenue = monthlyTotalRevenue * termLength;
     
-    // Only annualize if term length is greater than 12 months
+    // Calculate total quota attainment (sum of individual quotas)
+    const totalTermQuotaAttainment = cascadeQuotaAttainment + codeiumCoreQuotaAttainment - quotaDiscountAmount;
+    
+    // Annualize if term length is greater than 12 months
     const totalQuotaAttainment = termLength > 12 
-      ? (termTotalRevenue / termLength) * 12 
-      : termTotalRevenue;
+      ? (totalTermQuotaAttainment / termLength) * 12 
+      : totalTermQuotaAttainment;
 
     setRevenue({
       cascadeRevenue: {
