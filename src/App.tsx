@@ -80,18 +80,17 @@ const App: React.FC = () => {
     const monthlyCascadeRevenue = users * selectedProduct.cascadeListPrice;
     const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment * termLength;
     
-    // Calculate Codeium Core revenue and quota attainment (with discount)
+    // Calculate Codeium Core revenue (with discount on list price)
     const baseMonthlyCodeiumRevenue = users * selectedProduct.codeiumCoreListPrice;
     const discountedMonthlyCodeiumRevenue = baseMonthlyCodeiumRevenue * discountMultiplier;
     const monthlyDiscountAmount = baseMonthlyCodeiumRevenue - discountedMonthlyCodeiumRevenue;
     
-    // Apply discount to Codeium Core quota attainment
-    const baseCodeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * termLength;
-    const discountedCodeiumCoreQuotaAttainment = baseCodeiumCoreQuotaAttainment * discountMultiplier;
+    // Calculate Codeium Core quota attainment (no discount)
+    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * termLength;
 
     // Calculate total monthly revenue and quota attainment
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
-    const totalQuotaAttainment = cascadeQuotaAttainment + discountedCodeiumCoreQuotaAttainment;
+    const totalQuotaAttainment = cascadeQuotaAttainment + codeiumCoreQuotaAttainment;
 
     setRevenue({
       cascadeRevenue: {
@@ -102,7 +101,7 @@ const App: React.FC = () => {
       codeiumCoreRevenue: {
         monthly: discountedMonthlyCodeiumRevenue,
         term: discountedMonthlyCodeiumRevenue * termLength,
-        quotaAttainment: discountedCodeiumCoreQuotaAttainment,
+        quotaAttainment: codeiumCoreQuotaAttainment,
         discountAmount: monthlyDiscountAmount * termLength
       },
       totalRevenue: {
