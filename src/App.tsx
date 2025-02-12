@@ -36,6 +36,16 @@ const termOptions = [
   { value: 36, label: '36 Months (3 Years)' }
 ];
 
+// Currency formatter
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
   const [units, setUnits] = useState<number>(0);
@@ -110,7 +120,7 @@ const App: React.FC = () => {
           >
             {products.map(product => (
               <option key={product.name} value={product.name}>
-                {product.name} (Cascade: ${product.cascadeListPrice}/mo, Codeium Core: ${product.codeiumCoreListPrice}/mo)
+                {product.name} (Cascade: {formatCurrency(product.cascadeListPrice)}/mo, Codeium Core: {formatCurrency(product.codeiumCoreListPrice)}/mo)
               </option>
             ))}
           </select>
@@ -166,24 +176,24 @@ const App: React.FC = () => {
           <div className="details">            
             <div className="product-revenue">
               <h4>Cascade Revenue</h4>
-              <p>Monthly: ${revenue.cascadeRevenue.monthly.toFixed(2)}</p>
-              <p>Term Total: ${revenue.cascadeRevenue.term.toFixed(2)}</p>
-              <p>Annualized: ${revenue.cascadeRevenue.annual.toFixed(2)}</p>
+              <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
+              <p>Term Total: {formatCurrency(revenue.cascadeRevenue.term)}</p>
+              <p>Annualized: {formatCurrency(revenue.cascadeRevenue.annual)}</p>
             </div>
 
             <div className="product-revenue">
               <h4>Codeium Core Revenue (with {discount}% discount)</h4>
-              <p>Monthly: ${revenue.codeiumCoreRevenue.monthly.toFixed(2)}</p>
-              <p>Term Total: ${revenue.codeiumCoreRevenue.term.toFixed(2)}</p>
-              <p>Annualized: ${revenue.codeiumCoreRevenue.annual.toFixed(2)}</p>
-              <p className="discount">Total Discount: -${revenue.codeiumCoreRevenue.discountAmount.toFixed(2)}</p>
+              <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
+              <p>Term Total: {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
+              <p>Annualized: {formatCurrency(revenue.codeiumCoreRevenue.annual)}</p>
+              <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
             </div>
 
             <div className="product-revenue total">
               <h4>Total Revenue</h4>
-              <p>Monthly: ${revenue.totalRevenue.monthly.toFixed(2)}</p>
-              <p>Term Total: ${revenue.totalRevenue.term.toFixed(2)}</p>
-              <p>Annualized: ${revenue.totalRevenue.annual.toFixed(2)}</p>
+              <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
+              <p>Term Total: {formatCurrency(revenue.totalRevenue.term)}</p>
+              <p>Annualized: {formatCurrency(revenue.totalRevenue.annual)}</p>
             </div>
           </div>
         </div>
