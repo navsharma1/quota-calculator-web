@@ -115,71 +115,73 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
-      <h1>Quota Attainment</h1>
+      <h1>Quota Attainment Calculator</h1>
       
-      <div className="input-group">
-        <label>
-          Product:
-          <select 
-            value={selectedProduct.name}
-            onChange={(e) => {
-              const product = products.find(p => p.name === e.target.value);
-              if (product) setSelectedProduct(product);
-            }}
-          >
-            {products.map(product => (
-              <option key={product.name} value={product.name}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+      <div className="input-section">
+        <div className="input-group">
+          <label>
+            Product
+            <select 
+              value={selectedProduct.name}
+              onChange={(e) => {
+                const product = products.find(p => p.name === e.target.value);
+                if (product) setSelectedProduct(product);
+              }}
+            >
+              {products.map(product => (
+                <option key={product.name} value={product.name}>
+                  {product.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
-      <div className="input-group">
-        <label>
-          Number of Users:
-          <input
-            type="number"
-            min="0"
-            value={users}
-            onChange={(e) => setUsers(Number(e.target.value))}
-          />
-        </label>
-      </div>
+        <div className="input-group">
+          <label>
+            Number of Users
+            <input
+              type="number"
+              min="0"
+              value={users}
+              onChange={(e) => setUsers(Number(e.target.value))}
+            />
+          </label>
+        </div>
 
-      <div className="input-group">
-        <label>
-          Term Length (months):
-          <input
-            type="number"
-            min="1"
-            max="36"
-            value={termLength}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              if (value >= 1 && value <= 36) {
-                setTermLength(value);
-              }
-            }}
-          />
-        </label>
-      </div>
+        <div className="input-group">
+          <label>
+            Term Length (months)
+            <input
+              type="number"
+              min="1"
+              max="36"
+              value={termLength}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value >= 1 && value <= 36) {
+                  setTermLength(value);
+                }
+              }}
+            />
+          </label>
+        </div>
 
-      <div className="input-group">
-        <label>
-          Discount (%):
-          <input
-            type="number"
-            min="0"
-            max="100"
-            value={discount}
-            onChange={(e) => setDiscount(Number(e.target.value))}
-          />
-        </label>
-      </div>
+        <div className="input-group">
+          <label>
+            Discount (%)
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={discount}
+              onChange={(e) => setDiscount(Number(e.target.value))}
+            />
+          </label>
+        </div>
 
-      <button onClick={calculateRevenue}>Calculate Quota Attained</button>
+        <button onClick={calculateRevenue}>Calculate Quota Attained</button>
+      </div>
 
       {revenue && (
         <div className="result">
