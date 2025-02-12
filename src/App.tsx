@@ -89,10 +89,14 @@ const App: React.FC = () => {
     const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * termLength;
     const quotaDiscountAmount = monthlyDiscountAmount * termLength;
 
-    // Calculate total monthly revenue and annualized quota attainment
+    // Calculate total monthly revenue and quota attainment
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
     const termTotalRevenue = monthlyTotalRevenue * termLength;
-    const annualizedQuotaAttainment = (termTotalRevenue / termLength) * 12;
+    
+    // Only annualize if term length is greater than 12 months
+    const totalQuotaAttainment = termLength > 12 
+      ? (termTotalRevenue / termLength) * 12 
+      : termTotalRevenue;
 
     setRevenue({
       cascadeRevenue: {
@@ -109,7 +113,7 @@ const App: React.FC = () => {
       totalRevenue: {
         monthly: monthlyTotalRevenue,
         term: termTotalRevenue,
-        quotaAttainment: annualizedQuotaAttainment
+        quotaAttainment: totalQuotaAttainment
       }
     });
   };
@@ -210,7 +214,9 @@ const App: React.FC = () => {
               <h4>Total Revenue</h4>
               <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
               <p>Term Total ({termLength} months): {formatCurrency(revenue.totalRevenue.term)}</p>
-              <p className="quota-attainment">Total Annualized Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}</p>
+              <p className="quota-attainment">
+                {termLength > 12 ? 'Total Annualized' : 'Total Term'} Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}
+              </p>
             </div>
           </div>
         </div>
