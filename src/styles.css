@@ -10,9 +10,11 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 1rem;
 }
 
 .container {
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
@@ -25,6 +27,17 @@ h1 {
   text-align: center;
   color: #333;
   margin-bottom: 2rem;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 1rem 0 0.5rem 0;
 }
 
 .input-group {
@@ -72,23 +85,61 @@ button:hover {
   padding: 1.5rem;
   background-color: #f8f9fa;
   border-radius: 4px;
-  text-align: center;
 }
 
 .result h2 {
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+}
+
+.attainment-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.metric {
+  text-align: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.metric h3 {
+  margin: 0 0 0.5rem 0;
+  color: #666;
+}
+
+.metric p {
   margin: 0;
-  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.revenue-details {
+  border-top: 1px solid #ddd;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.revenue-details h3 {
   margin-bottom: 1rem;
 }
 
-.details {
-  text-align: left;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ddd;
-}
-
-.details p {
+.revenue-details p {
   margin: 0.5rem 0;
   color: #666;
+  display: flex;
+  justify-content: space-between;
+}
+
+.revenue-details p::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px dotted #ddd;
+  margin: 0 0.5rem;
+  transform: translateY(-0.5rem);
 }

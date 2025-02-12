@@ -34,17 +34,46 @@ const products: Product[] = [
   }
 ];
 
+const termOptions = [
+  { value: 1, label: '1 Month' },
+  { value: 12, label: '12 Months (1 Year)' },
+  { value: 24, label: '24 Months (2 Years)' },
+  { value: 36, label: '36 Months (3 Years)' }
+];
+
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
   const [units, setUnits] = useState<number>(0);
   const [quota, setQuota] = useState<number>(0);
-  const [attainment, setAttainment] = useState<number>(0);
+  const [termLength, setTermLength] = useState<number>(12); // Default to annual
+  const [attainment, setAttainment] = useState<{
+    monthly: number;
+    annual: number;
+    totalRevenue: number;
+    annualRevenue: number;
+    cascadeRevenue: number;
+    codeiumCoreRevenue: number;
+  } | null>(null);
 
   const calculateAttainment = () => {
     if (quota === 0) return;
-    const revenue = units * selectedProduct.listPrice;
-    const calculatedAttainment = (revenue / quota) * 100;
-    setAttainment(calculatedAttainment);
+
+    const monthlyRevenue = units * selectedProduct.listPrice;
+    const annualizedRevenue = (monthlyRevenue * 12);
+    const termRevenue = monthlyRevenue * termLength;
+    
+    // Calculate monthly and annual attainment
+    const monthlyAttainment = (monthlyRevenue / (quota / 12)) * 100;
+    const annualAttainment = (annualizedRevenue / quota) * 100;
+
+    setAttainment({
+      monthly: monthlyAttainment,
+      annual: annualAttainment,
+      totalRevenue: termRevenue,
+      annualRevenue: annualizedRevenue,
+      cascadeRevenue: units * selectedProduct.cascadePrice * termLength,
+      codeiumCoreRevenue: units * selectedProduct.codeiumCorePrice * termLength
+    });
   };
 
   return (
@@ -63,7 +92,7 @@ const App: React.FC = () => {
           >
             {products.map(product => (
               <option key={product.name} value={product.name}>
-                {product.name} (${product.listPrice})
+                {product.name} (${product.listPrice}/month)
               </option>
             ))}
           </select>
@@ -84,7 +113,23 @@ const App: React.FC = () => {
 
       <div className="input-group">
         <label>
-          Quota ($):
+          Term Length:
+          <select
+            value={termLength}
+            onChange={(e) => setTermLength(Number(e.target.value))}
+          >
+            {termOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="input-group">
+        <label>
+          Annual Quota ($):
           <input
             type="number"
             min="0"
@@ -96,13 +141,29 @@ const App: React.FC = () => {
 
       <button onClick={calculateAttainment}>Calculate Attainment</button>
 
-      {attainment > 0 && (
+      {attainment && (
         <div className="result">
-          <h2>Quota Attainment: {attainment.toFixed(1)}%</h2>
+          <h2>Quota Attainment</h2>
           <div className="details">
-            <p>Total Revenue: ${(units * selectedProduct.listPrice).toFixed(2)}</p>
-            <p>Cascade Revenue: ${(units * selectedProduct.cascadePrice).toFixed(2)}</p>
-            <p>Codeium Core Revenue: ${(units * selectedProduct.codeiumCorePrice).toFixed(2)}</p>
+            <div className="attainment-metrics">
+              <div className="metric">
+                <h3>Monthly</h3>
+                <p>{attainment.monthly.toFixed(1)}%</p>
+              </div>
+              <div className="metric">
+                <h3>Annual</h3>
+                <p>{attainment.annual.toFixed(1)}%</p>
+              </div>
+            </div>
+            
+            <div className="revenue-details">
+              <h3>Revenue Breakdown ({termLength} months)</h3>
+              <p>Monthly Revenue: ${(attainment.totalRevenue / termLength).toFixed(2)}</p>
+              <p>Term Total Revenue: ${attainment.totalRevenue.toFixed(2)}</p>
+              <p>Annualized Revenue: ${attainment.annualRevenue.toFixed(2)}</p>
+              <p>Term Cascade Revenue: ${attainment.cascadeRevenue.toFixed(2)}</p>
+              <p>Term Codeium Core Revenue: ${attainment.codeiumCoreRevenue.toFixed(2)}</p>
+            </div>
           </div>
         </div>
       )}
