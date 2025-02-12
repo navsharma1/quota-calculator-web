@@ -201,3 +201,11 @@ button:hover {
   font-weight: 600;
   font-size: 1.1em;
 }
+
+.unit-price {
+  color: #666;
+  font-size: 0.9em;
+  margin: 5px 0;
+  padding: 3px 0;
+  border-bottom: 1px dashed #ddd;
+}

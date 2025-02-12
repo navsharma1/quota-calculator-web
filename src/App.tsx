@@ -187,6 +187,7 @@ const App: React.FC = () => {
           <div className="details">            
             <div className="product-revenue">
               <h4>Cascade Revenue</h4>
+              <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.cascadeListPrice)}</p>
               <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
               <p>Term Total ({termLength} months): {formatCurrency(revenue.cascadeRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
@@ -194,6 +195,8 @@ const App: React.FC = () => {
 
             <div className="product-revenue">
               <h4>Codeium Core Revenue (with {discount}% discount)</h4>
+              <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
+              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * (1 - discount/100))}</p>
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total ({termLength} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
