@@ -37,12 +37,17 @@ label {
   color: #666;
 }
 
-input {
+input, select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+select {
+  background-color: white;
 }
 
 button {
@@ -64,8 +69,8 @@ button:hover {
 
 .result {
   margin-top: 2rem;
-  padding: 1rem;
-  background-color: #f0f0f0;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
   border-radius: 4px;
   text-align: center;
 }
@@ -73,4 +78,17 @@ button:hover {
 .result h2 {
   margin: 0;
   color: #333;
+  margin-bottom: 1rem;
+}
+
+.details {
+  text-align: left;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.details p {
+  margin: 0.5rem 0;
+  color: #666;
 }
