@@ -2,35 +2,30 @@ import React, { useState } from 'react';
 
 interface Product {
   name: string;
-  listPrice: number;
-  cascadePrice: number;
-  codeiumCorePrice: number;
+  cascadeListPrice: number;
+  codeiumCoreListPrice: number;
 }
 
 const products: Product[] = [
   {
     name: 'Cloud Flow Entry',
-    listPrice: 73.00,
-    cascadePrice: 44.00,
-    codeiumCorePrice: 29.00
+    cascadeListPrice: 44.00,
+    codeiumCoreListPrice: 29.00
   },
   {
     name: 'Cloud Flow Standard',
-    listPrice: 128.00,
-    cascadePrice: 99.00,
-    codeiumCorePrice: 29.00
+    cascadeListPrice: 99.00,
+    codeiumCoreListPrice: 29.00
   },
   {
     name: 'Hybrid Flow Entry',
-    listPrice: 83.00,
-    cascadePrice: 44.00,
-    codeiumCorePrice: 39.00
+    cascadeListPrice: 44.00,
+    codeiumCoreListPrice: 39.00
   },
   {
     name: 'Hybrid Flow Standard',
-    listPrice: 138.00,
-    cascadePrice: 99.00,
-    codeiumCorePrice: 39.00
+    cascadeListPrice: 99.00,
+    codeiumCoreListPrice: 39.00
   }
 ];
 
@@ -51,19 +46,30 @@ const App: React.FC = () => {
     annual: number;
     totalRevenue: number;
     annualRevenue: number;
-    cascadeRevenue: number;
-    codeiumCoreRevenue: number;
+    cascadeRevenue: {
+      monthly: number;
+      term: number;
+      annual: number;
+    };
+    codeiumCoreRevenue: {
+      monthly: number;
+      term: number;
+      annual: number;
+    };
   } | null>(null);
 
   const calculateAttainment = () => {
     if (quota === 0) return;
 
-    const monthlyRevenue = units * selectedProduct.listPrice;
-    const annualizedRevenue = (monthlyRevenue * 12);
-    const termRevenue = monthlyRevenue * termLength;
+    const monthlyCascadeRevenue = units * selectedProduct.cascadeListPrice;
+    const monthlyCodeiumCoreRevenue = units * selectedProduct.codeiumCoreListPrice;
+    const monthlyTotalRevenue = monthlyCascadeRevenue + monthlyCodeiumCoreRevenue;
+
+    const annualizedRevenue = monthlyTotalRevenue * 12;
+    const termRevenue = monthlyTotalRevenue * termLength;
     
     // Calculate monthly and annual attainment
-    const monthlyAttainment = (monthlyRevenue / (quota / 12)) * 100;
+    const monthlyAttainment = (monthlyTotalRevenue / (quota / 12)) * 100;
     const annualAttainment = (annualizedRevenue / quota) * 100;
 
     setAttainment({
@@ -71,8 +77,16 @@ const App: React.FC = () => {
       annual: annualAttainment,
       totalRevenue: termRevenue,
       annualRevenue: annualizedRevenue,
-      cascadeRevenue: units * selectedProduct.cascadePrice * termLength,
-      codeiumCoreRevenue: units * selectedProduct.codeiumCorePrice * termLength
+      cascadeRevenue: {
+        monthly: monthlyCascadeRevenue,
+        term: monthlyCascadeRevenue * termLength,
+        annual: monthlyCascadeRevenue * 12
+      },
+      codeiumCoreRevenue: {
+        monthly: monthlyCodeiumCoreRevenue,
+        term: monthlyCodeiumCoreRevenue * termLength,
+        annual: monthlyCodeiumCoreRevenue * 12
+      }
     });
   };
 
@@ -92,7 +106,7 @@ const App: React.FC = () => {
           >
             {products.map(product => (
               <option key={product.name} value={product.name}>
-                {product.name} (${product.listPrice}/month)
+                {product.name} (Cascade: ${product.cascadeListPrice}/mo, Codeium Core: ${product.codeiumCoreListPrice}/mo)
               </option>
             ))}
           </select>
@@ -158,11 +172,27 @@ const App: React.FC = () => {
             
             <div className="revenue-details">
               <h3>Revenue Breakdown ({termLength} months)</h3>
-              <p>Monthly Revenue: ${(attainment.totalRevenue / termLength).toFixed(2)}</p>
-              <p>Term Total Revenue: ${attainment.totalRevenue.toFixed(2)}</p>
-              <p>Annualized Revenue: ${attainment.annualRevenue.toFixed(2)}</p>
-              <p>Term Cascade Revenue: ${attainment.cascadeRevenue.toFixed(2)}</p>
-              <p>Term Codeium Core Revenue: ${attainment.codeiumCoreRevenue.toFixed(2)}</p>
+              
+              <div className="product-revenue">
+                <h4>Cascade Revenue</h4>
+                <p>Monthly: ${attainment.cascadeRevenue.monthly.toFixed(2)}</p>
+                <p>Term Total: ${attainment.cascadeRevenue.term.toFixed(2)}</p>
+                <p>Annualized: ${attainment.cascadeRevenue.annual.toFixed(2)}</p>
+              </div>
+
+              <div className="product-revenue">
+                <h4>Codeium Core Revenue</h4>
+                <p>Monthly: ${attainment.codeiumCoreRevenue.monthly.toFixed(2)}</p>
+                <p>Term Total: ${attainment.codeiumCoreRevenue.term.toFixed(2)}</p>
+                <p>Annualized: ${attainment.codeiumCoreRevenue.annual.toFixed(2)}</p>
+              </div>
+
+              <div className="product-revenue total">
+                <h4>Total Revenue</h4>
+                <p>Monthly: ${(attainment.totalRevenue / termLength).toFixed(2)}</p>
+                <p>Term Total: ${attainment.totalRevenue.toFixed(2)}</p>
+                <p>Annualized: ${attainment.annualRevenue.toFixed(2)}</p>
+              </div>
             </div>
           </div>
         </div>
