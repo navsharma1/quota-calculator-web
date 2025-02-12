@@ -162,10 +162,23 @@ button:hover {
   align-items: center;
 }
 
+.product-revenue p.discount {
+  color: #e53e3e;
+  font-weight: 500;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #eee;
+}
+
 .product-revenue p::after {
   content: "";
   flex: 1;
   border-bottom: 1px dotted #ddd;
   margin: 0 0.5rem;
   transform: translateY(-0.1rem);
+}
+
+.product-revenue p.discount::after {
+  border-bottom-style: dashed;
+  border-bottom-color: #fbd5d5;
 }
