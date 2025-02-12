@@ -41,6 +41,9 @@ const products: Product[] = [
 
 const termOptions = [
   { value: 1, label: '1 Month' },
+  { value: 3, label: '3 Months' },
+  { value: 6, label: '6 Months' },
+  { value: 9, label: '9 Months' },
   { value: 12, label: '12 Months (1 Year)' },
   { value: 24, label: '24 Months (2 Years)' },
   { value: 36, label: '36 Months (3 Years)' }
@@ -85,16 +88,17 @@ const App: React.FC = () => {
 
   const calculateRevenue = () => {
     const discountMultiplier = 1 - (discount / 100);
+    const annualizationMultiplier = 12 / termLength;
     
     // Calculate Cascade revenue and quota attainment (no discount)
     const monthlyCascadeRevenue = users * selectedProduct.cascadeListPrice;
-    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment;
+    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment * annualizationMultiplier;
     
     // Calculate Codeium Core revenue and quota attainment (with discount)
     const baseMonthlyCodeiumRevenue = users * selectedProduct.codeiumCoreListPrice;
     const discountedMonthlyCodeiumRevenue = baseMonthlyCodeiumRevenue * discountMultiplier;
     const monthlyDiscountAmount = baseMonthlyCodeiumRevenue - discountedMonthlyCodeiumRevenue;
-    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment;
+    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * annualizationMultiplier;
 
     // Calculate total monthly revenue and quota attainment
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
@@ -139,7 +143,7 @@ const App: React.FC = () => {
           >
             {products.map(product => (
               <option key={product.name} value={product.name}>
-                {product.name} (Cascade: {formatCurrency(product.cascadeListPrice)}/mo, Codeium Core: {formatCurrency(product.codeiumCoreListPrice)}/mo)
+                {product.name}
               </option>
             ))}
           </select>
@@ -187,7 +191,7 @@ const App: React.FC = () => {
         </label>
       </div>
 
-      <button onClick={calculateRevenue}>Calculate Revenue</button>
+      <button onClick={calculateRevenue}>Calculate Quota Attained</button>
 
       {revenue && (
         <div className="result">
@@ -198,7 +202,7 @@ const App: React.FC = () => {
               <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.cascadeRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.cascadeRevenue.annual)}</p>
-              <p className="quota-attainment">Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
+              <p className="quota-attainment">Annualized Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
             </div>
 
             <div className="product-revenue">
@@ -206,7 +210,7 @@ const App: React.FC = () => {
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.codeiumCoreRevenue.annual)}</p>
-              <p className="quota-attainment">Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
+              <p className="quota-attainment">Annualized Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
               <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
             </div>
 
@@ -215,7 +219,7 @@ const App: React.FC = () => {
               <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
               <p>Term Total: {formatCurrency(revenue.totalRevenue.term)}</p>
               <p>Annualized: {formatCurrency(revenue.totalRevenue.annual)}</p>
-              <p className="quota-attainment">Total Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}</p>
+              <p className="quota-attainment">Total Annualized Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}</p>
             </div>
           </div>
         </div>
