@@ -52,8 +52,8 @@ const formatCurrency = (amount: number): string => {
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
   const [users, setUsers] = useState<number>(0);
-  const [discount, setDiscount] = useState<number>(0);
-  const [termLength, setTermLength] = useState<number>(12); // Default to annual
+  const [discount, setDiscount] = useState<string>('');
+  const [termLength, setTermLength] = useState<string>('');
   const [revenue, setRevenue] = useState<{
     cascadeRevenue: {
       monthly: number;
@@ -74,11 +74,21 @@ const App: React.FC = () => {
   } | null>(null);
 
   const calculateRevenue = () => {
-    const discountMultiplier = 1 - (discount / 100);
+    // Convert string inputs to numbers, defaulting to 0 if empty
+    const numericDiscount = discount === '' ? 0 : Number(discount);
+    const numericTermLength = termLength === '' ? 0 : Number(termLength);
+
+    // Validate inputs
+    if (numericTermLength <= 0) {
+      alert('Please enter a valid term length');
+      return;
+    }
+
+    const discountMultiplier = 1 - (numericDiscount / 100);
     
     // Calculate Cascade revenue and quota attainment (no discount)
     const monthlyCascadeRevenue = users * selectedProduct.cascadeListPrice;
-    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment * termLength;
+    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment * numericTermLength;
     
     // Calculate Codeium Core revenue (with discount on list price)
     const baseMonthlyCodeiumRevenue = users * selectedProduct.codeiumCoreListPrice;
@@ -86,30 +96,30 @@ const App: React.FC = () => {
     const monthlyDiscountAmount = baseMonthlyCodeiumRevenue - discountedMonthlyCodeiumRevenue;
     
     // Calculate Codeium Core quota attainment and discount
-    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * termLength;
-    const quotaDiscountAmount = monthlyDiscountAmount * termLength;
+    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * numericTermLength;
+    const quotaDiscountAmount = monthlyDiscountAmount * numericTermLength;
 
     // Calculate total monthly revenue
     const monthlyTotalRevenue = monthlyCascadeRevenue + discountedMonthlyCodeiumRevenue;
-    const termTotalRevenue = monthlyTotalRevenue * termLength;
+    const termTotalRevenue = monthlyTotalRevenue * numericTermLength;
     
     // Calculate total quota attainment (sum of individual quotas)
     const totalTermQuotaAttainment = cascadeQuotaAttainment + codeiumCoreQuotaAttainment - quotaDiscountAmount;
     
     // Annualize if term length is greater than 12 months
-    const totalQuotaAttainment = termLength > 12 
-      ? (totalTermQuotaAttainment / termLength) * 12 
+    const totalQuotaAttainment = numericTermLength > 12 
+      ? (totalTermQuotaAttainment / numericTermLength) * 12 
       : totalTermQuotaAttainment;
 
     setRevenue({
       cascadeRevenue: {
         monthly: monthlyCascadeRevenue,
-        term: monthlyCascadeRevenue * termLength,
+        term: monthlyCascadeRevenue * numericTermLength,
         quotaAttainment: cascadeQuotaAttainment
       },
       codeiumCoreRevenue: {
         monthly: discountedMonthlyCodeiumRevenue,
-        term: discountedMonthlyCodeiumRevenue * termLength,
+        term: discountedMonthlyCodeiumRevenue * numericTermLength,
         quotaAttainment: codeiumCoreQuotaAttainment,
         discountAmount: quotaDiscountAmount
       },
@@ -166,11 +176,12 @@ const App: React.FC = () => {
               max="36"
               value={termLength}
               onChange={(e) => {
-                const value = Number(e.target.value);
-                if (value >= 1 && value <= 36) {
+                const value = e.target.value;
+                if (value === '' || (Number(value) >= 1 && Number(value) <= 36)) {
                   setTermLength(value);
                 }
               }}
+              placeholder="Enter term length"
             />
           </label>
         </div>
@@ -183,7 +194,13 @@ const App: React.FC = () => {
               min="0"
               max="100"
               value={discount}
-              onChange={(e) => setDiscount(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === '' || (Number(value) >= 0 && Number(value) <= 100)) {
+                  setDiscount(value);
+                }
+              }}
+              placeholder="Enter discount"
             />
           </label>
         </div>
@@ -204,9 +221,9 @@ const App: React.FC = () => {
             </div>
 
             <div className="product-revenue">
-              <h4>Codeium Core Revenue (with {discount}% discount)</h4>
+              <h4>Codeium Core Revenue {discount && `(with ${discount}% discount)`}</h4>
               <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
-              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * (1 - discount/100))}</p>
+              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * (1 - (Number(discount) || 0)/100))}</p>
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total ({termLength} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
