@@ -216,7 +216,7 @@ const App: React.FC = () => {
               <h4>Cascade Revenue</h4>
               <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.cascadeListPrice)}</p>
               <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
-              <p>Term Total ({termLength} months): {formatCurrency(revenue.cascadeRevenue.term)}</p>
+              <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.cascadeRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
             </div>
 
@@ -225,7 +225,7 @@ const App: React.FC = () => {
               <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
               <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * (1 - (Number(discount) || 0)/100))}</p>
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
-              <p>Term Total ({termLength} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
+              <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
               <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
             </div>
@@ -233,9 +233,9 @@ const App: React.FC = () => {
             <div className="product-revenue total">
               <h4>Total Revenue</h4>
               <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
-              <p>Term Total ({termLength} months): {formatCurrency(revenue.totalRevenue.term)}</p>
+              <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.totalRevenue.term)}</p>
               <p className="quota-attainment">
-                {termLength > 12 ? 'Total Annualized' : 'Total Term'} Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}
+                {Number(termLength) > 12 ? 'Total Annualized' : 'Total Term'} Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}
               </p>
             </div>
           </div>
