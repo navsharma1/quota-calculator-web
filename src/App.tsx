@@ -51,7 +51,7 @@ const formatCurrency = (amount: number): string => {
 
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
-  const [users, setUsers] = useState<number>(0);
+  const [users, setUsers] = useState<string>('');
   const [discount, setDiscount] = useState<string>('');
   const [termLength, setTermLength] = useState<string>('');
   const [revenue, setRevenue] = useState<{
@@ -75,6 +75,7 @@ const App: React.FC = () => {
 
   const calculateRevenue = () => {
     // Convert string inputs to numbers, defaulting to 0 if empty
+    const numericUsers = users === '' ? 0 : Number(users);
     const numericDiscount = discount === '' ? 0 : Number(discount);
     const numericTermLength = termLength === '' ? 0 : Number(termLength);
 
@@ -84,19 +85,24 @@ const App: React.FC = () => {
       return;
     }
 
+    if (numericUsers <= 0) {
+      alert('Please enter a valid number of users');
+      return;
+    }
+
     const discountMultiplier = 1 - (numericDiscount / 100);
     
     // Calculate Cascade revenue and quota attainment (no discount)
-    const monthlyCascadeRevenue = users * selectedProduct.cascadeListPrice;
-    const cascadeQuotaAttainment = users * selectedProduct.cascadeQuotaAttainment * numericTermLength;
+    const monthlyCascadeRevenue = numericUsers * selectedProduct.cascadeListPrice;
+    const cascadeQuotaAttainment = numericUsers * selectedProduct.cascadeQuotaAttainment * numericTermLength;
     
     // Calculate Codeium Core revenue (with discount on list price)
-    const baseMonthlyCodeiumRevenue = users * selectedProduct.codeiumCoreListPrice;
+    const baseMonthlyCodeiumRevenue = numericUsers * selectedProduct.codeiumCoreListPrice;
     const discountedMonthlyCodeiumRevenue = baseMonthlyCodeiumRevenue * discountMultiplier;
     const monthlyDiscountAmount = baseMonthlyCodeiumRevenue - discountedMonthlyCodeiumRevenue;
     
     // Calculate Codeium Core quota attainment and discount
-    const codeiumCoreQuotaAttainment = users * selectedProduct.codeiumCoreQuotaAttainment * numericTermLength;
+    const codeiumCoreQuotaAttainment = numericUsers * selectedProduct.codeiumCoreQuotaAttainment * numericTermLength;
     const quotaDiscountAmount = monthlyDiscountAmount * numericTermLength;
 
     // Calculate total monthly revenue
@@ -160,9 +166,15 @@ const App: React.FC = () => {
             Number of Users
             <input
               type="number"
-              min="0"
+              min="1"
               value={users}
-              onChange={(e) => setUsers(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === '' || (Number(value) >= 1)) {
+                  setUsers(value);
+                }
+              }}
+              placeholder="Enter number of users"
             />
           </label>
         </div>
