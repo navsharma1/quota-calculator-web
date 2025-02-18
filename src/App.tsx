@@ -13,28 +13,28 @@ const products: Product[] = [
     name: 'Cloud Flow Entry',
     cascadeListPrice: 44,
     codeiumCoreListPrice: 29,
-    cascadeQuotaAttainment: 44,
+    cascadeQuotaAttainment: 14,
     codeiumCoreQuotaAttainment: 29
   },
   {
     name: 'Cloud Flow Standard',
     cascadeListPrice: 99,
     codeiumCoreListPrice: 29,
-    cascadeQuotaAttainment: 99,
+    cascadeQuotaAttainment: 29,
     codeiumCoreQuotaAttainment: 29
   },
   {
     name: 'Hybrid Flow Entry',
     cascadeListPrice: 44,
     codeiumCoreListPrice: 39,
-    cascadeQuotaAttainment: 44,
+    cascadeQuotaAttainment: 14,
     codeiumCoreQuotaAttainment: 39
   },
   {
     name: 'Hybrid Flow Standard',
     cascadeListPrice: 99,
     codeiumCoreListPrice: 39,
-    cascadeQuotaAttainment: 99,
+    cascadeQuotaAttainment: 29,
     codeiumCoreQuotaAttainment: 39
   }
 ];
