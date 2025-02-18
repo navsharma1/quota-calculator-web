@@ -79,19 +79,24 @@ const App: React.FC = () => {
     const numericUsers = users === '' ? 0 : Number(users);
     const numericTermLength = termLength === '' ? 0 : Number(termLength);
     
+    // Calculate total list price
+    const totalListPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
+    
     // Handle discount and unit price calculations
     let discountMultiplier = 1;
     let effectiveDiscount = 0;
     
     if (discount !== '') {
-      // If discount is provided, use it directly
+      // If discount is provided, use it directly for Codeium Core
       effectiveDiscount = Number(discount);
       discountMultiplier = 1 - (effectiveDiscount / 100);
     } else if (unitPrice !== '') {
-      // If unit price is provided, calculate the effective discount
+      // If unit price is provided, calculate the effective discount on Codeium Core
       const numericUnitPrice = Number(unitPrice);
-      effectiveDiscount = ((selectedProduct.codeiumCoreListPrice - numericUnitPrice) / selectedProduct.codeiumCoreListPrice) * 100;
-      discountMultiplier = numericUnitPrice / selectedProduct.codeiumCoreListPrice;
+      // The difference between total list price and desired unit price should be taken entirely from Codeium Core
+      const desiredCodeiumPrice = numericUnitPrice - selectedProduct.cascadeListPrice;
+      effectiveDiscount = ((selectedProduct.codeiumCoreListPrice - desiredCodeiumPrice) / selectedProduct.codeiumCoreListPrice) * 100;
+      discountMultiplier = desiredCodeiumPrice / selectedProduct.codeiumCoreListPrice;
     }
 
     // Validate inputs
@@ -241,17 +246,19 @@ const App: React.FC = () => {
             Unit Price ($)
             <input
               type="number"
-              min="0"
-              max={selectedProduct.codeiumCoreListPrice}
+              min={selectedProduct.cascadeListPrice}
+              max={selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice}
               value={unitPrice}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value === '' || (Number(value) >= 0 && Number(value) <= selectedProduct.codeiumCoreListPrice)) {
+                const minPrice = selectedProduct.cascadeListPrice;
+                const maxPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
+                if (value === '' || (Number(value) >= minPrice && Number(value) <= maxPrice)) {
                   setUnitPrice(value);
                   setDiscount(''); // Clear discount when unit price is entered
                 }
               }}
-              placeholder={`Enter amount (max: $${selectedProduct.codeiumCoreListPrice})`}
+              placeholder={`Enter amount (${formatCurrency(selectedProduct.cascadeListPrice)} - ${formatCurrency(selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice)})`}
             />
           </label>
         </div>
@@ -274,9 +281,9 @@ const App: React.FC = () => {
             <div className="product-revenue">
               <h4>Codeium Core Revenue {(discount || unitPrice) && 
                 `(with ${discount ? `${discount}% discount` : 
-                  `$${unitPrice} unit price (${((selectedProduct.codeiumCoreListPrice - Number(unitPrice)) / selectedProduct.codeiumCoreListPrice * 100).toFixed(1)}% discount)`})`}</h4>
+                  `$${(Number(unitPrice) - selectedProduct.cascadeListPrice).toFixed(2)} unit price (${((selectedProduct.codeiumCoreListPrice - (Number(unitPrice) - selectedProduct.cascadeListPrice)) / selectedProduct.codeiumCoreListPrice * 100).toFixed(1)}% discount)`})`}</h4>
               <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
-              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * (1 - (Number(discount) || ((selectedProduct.codeiumCoreListPrice - Number(unitPrice)) / selectedProduct.codeiumCoreListPrice) || 0)))}</p>
+              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * discountMultiplier)}</p>
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
