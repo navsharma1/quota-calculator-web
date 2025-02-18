@@ -246,16 +246,30 @@ const App: React.FC = () => {
             Unit Price ($)
             <input
               type="number"
+              step="0.01"
               min={selectedProduct.cascadeListPrice}
               max={selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice}
               value={unitPrice}
               onChange={(e) => {
                 const value = e.target.value;
+                const numericValue = Number(value);
                 const minPrice = selectedProduct.cascadeListPrice;
                 const maxPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
-                if (value === '' || (Number(value) >= minPrice && Number(value) <= maxPrice)) {
+                
+                if (value === '' || !isNaN(numericValue)) {
                   setUnitPrice(value);
                   setDiscount(''); // Clear discount when unit price is entered
+                }
+              }}
+              onBlur={(e) => {
+                // Validate on blur
+                const numericValue = Number(e.target.value);
+                const minPrice = selectedProduct.cascadeListPrice;
+                const maxPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
+                
+                if (numericValue < minPrice || numericValue > maxPrice) {
+                  alert(`Please enter a price between ${formatCurrency(minPrice)} and ${formatCurrency(maxPrice)}`);
+                  setUnitPrice('');
                 }
               }}
               placeholder={`Enter amount (${formatCurrency(selectedProduct.cascadeListPrice)} - ${formatCurrency(selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice)})`}
