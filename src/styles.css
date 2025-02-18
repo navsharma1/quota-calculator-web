@@ -7,6 +7,14 @@
   --shadow-color: rgba(0, 0, 0, 0.05);
   --success-color: #00a854;
   --danger-color: #ff4d4f;
+  --text-primary: #2c3e50;
+  --background-secondary: #f8f9fa;
+  --background-primary: #ffffff;
+  --border-highlight: #0066cc;
+  --text-secondary: #64748b;
+  --text-muted: #64748b;
+  --text-error: #ff4d4f;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -112,18 +120,65 @@ button:active {
   transform: translateY(0);
 }
 
-.result {
+.results {
   margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border-color);
 }
 
-.result h2 {
-  color: var(--text-color);
-  font-size: 1.5rem;
+.revenue-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.revenue-breakdown h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.breakout-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.product-revenue {
+  background: var(--background-secondary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.product-revenue.total {
+  background: var(--background-primary);
+  border: 2px solid var(--border-highlight);
+}
+
+.product-revenue h4 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.product-revenue p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.product-revenue .unit-price {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.product-revenue .quota-attainment {
+  margin-top: 1rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.product-revenue .discount {
+  color: var(--text-error);
+  font-weight: 500;
 }
 
 .attainment-metrics {
@@ -160,64 +215,6 @@ button:active {
 .revenue-details h3 {
   margin-bottom: 1.5rem;
   text-align: center;
-}
-
-.product-revenue {
-  padding: 1.5rem;
-  background-color: var(--input-background);
-  border-radius: 10px;
-  box-shadow: 0 2px 4px var(--shadow-color);
-}
-
-.product-revenue h4 {
-  color: var(--text-color);
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 1rem;
-}
-
-.product-revenue p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-}
-
-.product-revenue p.discount {
-  color: var(--danger-color);
-  font-weight: 500;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
-  border-top: 1px dashed var(--border-color);
-}
-
-.product-revenue p.quota-attainment {
-  color: var(--success-color);
-  font-weight: 600;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
-  border-top: 1px dashed var(--border-color);
-}
-
-.product-revenue.total {
-  background-color: #f1f5f9;
-  border: 1px solid var(--border-color);
-}
-
-.product-revenue.total h4 {
-  color: var(--primary-color);
-  border-bottom-color: var(--border-color);
-}
-
-.product-revenue.total p.quota-attainment {
-  color: var(--primary-color);
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.unit-price {
-  color: #64748b;
-  font-size: 0.9rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px dashed var(--border-color);
 }
 
 @media (max-width: 768px) {

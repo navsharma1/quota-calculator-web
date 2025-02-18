@@ -269,42 +269,44 @@ const App: React.FC = () => {
       </div>
 
       {revenue && (
-        <div className="result">
-          <h2>Revenue and Quota Attainment</h2>
-          <div className="details">            
-            <div className="product-revenue">
-              <h4>Cascade Revenue</h4>
-              <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.cascadeListPrice)}</p>
-              <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
-              <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.cascadeRevenue.term)}</p>
-              <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
-            </div>
-
-            <div className="product-revenue">
-              <h4>Codeium Core Revenue {(discount || unitPrice) && 
-                `(with ${discount ? `${discount}% discount` : 
-                  `$${(Number(unitPrice) - selectedProduct.cascadeListPrice).toFixed(2)} unit price (${((selectedProduct.codeiumCoreListPrice - (Number(unitPrice) - selectedProduct.cascadeListPrice)) / selectedProduct.codeiumCoreListPrice * 100).toFixed(1)}% discount)`})`}</h4>
-              <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
-              <p className="unit-price">Discounted Price per User: {formatCurrency(
-                selectedProduct.codeiumCoreListPrice * (
-                  discount ? (1 - Number(discount)/100) :
-                  unitPrice ? ((Number(unitPrice) - selectedProduct.cascadeListPrice) / selectedProduct.codeiumCoreListPrice) :
-                  1
-                )
-              )}</p>
-              <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
-              <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
-              <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
-              <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
-            </div>
-
+        <div className="results">
+          <div className="revenue-breakdown">
             <div className="product-revenue total">
-              <h4>Total Revenue</h4>
+              <h3>Total Revenue</h3>
               <p>Monthly: {formatCurrency(revenue.totalRevenue.monthly)}</p>
               <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.totalRevenue.term)}</p>
               <p className="quota-attainment">
                 {Number(termLength) > 12 ? 'Total Annualized' : 'Total Term'} Quota Attainment: {formatCurrency(revenue.totalRevenue.quotaAttainment)}
               </p>
+            </div>
+
+            <h3>Quota Attainment Breakout</h3>
+            <div className="breakout-container">
+              <div className="product-revenue">
+                <h4>Cascade Revenue</h4>
+                <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.cascadeListPrice)}</p>
+                <p>Monthly: {formatCurrency(revenue.cascadeRevenue.monthly)}</p>
+                <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.cascadeRevenue.term)}</p>
+                <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.cascadeRevenue.quotaAttainment)}</p>
+              </div>
+
+              <div className="product-revenue">
+                <h4>Codeium Core Revenue {(discount || unitPrice) && 
+                  `(with ${discount ? `${discount}% discount` : 
+                    `$${(Number(unitPrice) - selectedProduct.cascadeListPrice).toFixed(2)} unit price (${((selectedProduct.codeiumCoreListPrice - (Number(unitPrice) - selectedProduct.cascadeListPrice)) / selectedProduct.codeiumCoreListPrice * 100).toFixed(1)}% discount)`})`}</h4>
+                <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
+                <p className="unit-price">Discounted Price per User: {formatCurrency(
+                  selectedProduct.codeiumCoreListPrice * (
+                    discount ? (1 - Number(discount)/100) :
+                    unitPrice ? ((Number(unitPrice) - selectedProduct.cascadeListPrice) / selectedProduct.codeiumCoreListPrice) :
+                    1
+                  )
+                )}</p>
+                <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
+                <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
+                <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
+                <p className="discount">Total Discount: -{formatCurrency(revenue.codeiumCoreRevenue.discountAmount)}</p>
+              </div>
             </div>
           </div>
         </div>
