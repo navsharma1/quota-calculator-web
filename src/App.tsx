@@ -11,31 +11,31 @@ interface Product {
 const products: Product[] = [
   {
     name: 'Cloud Flow Entry',
-    cascadeListPrice: 44.00,
-    codeiumCoreListPrice: 29.00,
-    cascadeQuotaAttainment: 14.00,
-    codeiumCoreQuotaAttainment: 29.00
+    cascadeListPrice: 44,
+    codeiumCoreListPrice: 29,
+    cascadeQuotaAttainment: 44,
+    codeiumCoreQuotaAttainment: 29
   },
   {
     name: 'Cloud Flow Standard',
-    cascadeListPrice: 99.00,
-    codeiumCoreListPrice: 29.00,
-    cascadeQuotaAttainment: 29.00,
-    codeiumCoreQuotaAttainment: 29.00
+    cascadeListPrice: 99,
+    codeiumCoreListPrice: 29,
+    cascadeQuotaAttainment: 99,
+    codeiumCoreQuotaAttainment: 29
   },
   {
     name: 'Hybrid Flow Entry',
-    cascadeListPrice: 44.00,
-    codeiumCoreListPrice: 39.00,
-    cascadeQuotaAttainment: 14.00,
-    codeiumCoreQuotaAttainment: 39.00
+    cascadeListPrice: 44,
+    codeiumCoreListPrice: 39,
+    cascadeQuotaAttainment: 44,
+    codeiumCoreQuotaAttainment: 39
   },
   {
     name: 'Hybrid Flow Standard',
-    cascadeListPrice: 99.00,
-    codeiumCoreListPrice: 39.00,
-    cascadeQuotaAttainment: 29.00,
-    codeiumCoreQuotaAttainment: 39.00
+    cascadeListPrice: 99,
+    codeiumCoreListPrice: 39,
+    cascadeQuotaAttainment: 99,
+    codeiumCoreQuotaAttainment: 39
   }
 ];
 
