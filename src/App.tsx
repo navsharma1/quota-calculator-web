@@ -78,6 +78,7 @@ const App: React.FC = () => {
     // Convert string inputs to numbers, defaulting to 0 if empty
     const numericUsers = users === '' ? 0 : Number(users);
     const numericTermLength = termLength === '' ? 0 : Number(termLength);
+    const numericUnitPrice = unitPrice === '' ? 0 : Number(unitPrice);
     
     // Calculate total list price
     const totalListPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
@@ -92,7 +93,6 @@ const App: React.FC = () => {
       discountMultiplier = 1 - (effectiveDiscount / 100);
     } else if (unitPrice !== '') {
       // If unit price is provided, calculate the effective discount on Codeium Core
-      const numericUnitPrice = Number(unitPrice);
       // The difference between total list price and desired unit price should be taken entirely from Codeium Core
       const desiredCodeiumPrice = numericUnitPrice - selectedProduct.cascadeListPrice;
       effectiveDiscount = ((selectedProduct.codeiumCoreListPrice - desiredCodeiumPrice) / selectedProduct.codeiumCoreListPrice) * 100;
@@ -107,6 +107,11 @@ const App: React.FC = () => {
 
     if (numericUsers <= 0) {
       alert('Please enter a valid number of users');
+      return;
+    }
+
+    if (unitPrice !== '' && (numericUnitPrice < selectedProduct.cascadeListPrice || numericUnitPrice > totalListPrice)) {
+      alert(`Please enter a price between ${formatCurrency(selectedProduct.cascadeListPrice)} and ${formatCurrency(totalListPrice)}`);
       return;
     }
 
@@ -247,29 +252,12 @@ const App: React.FC = () => {
             <input
               type="number"
               step="0.01"
-              min={selectedProduct.cascadeListPrice}
-              max={selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice}
               value={unitPrice}
               onChange={(e) => {
                 const value = e.target.value;
-                const numericValue = Number(value);
-                const minPrice = selectedProduct.cascadeListPrice;
-                const maxPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
-                
-                if (value === '' || !isNaN(numericValue)) {
+                if (value === '' || !isNaN(Number(value))) {
                   setUnitPrice(value);
                   setDiscount(''); // Clear discount when unit price is entered
-                }
-              }}
-              onBlur={(e) => {
-                // Validate on blur
-                const numericValue = Number(e.target.value);
-                const minPrice = selectedProduct.cascadeListPrice;
-                const maxPrice = selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice;
-                
-                if (numericValue < minPrice || numericValue > maxPrice) {
-                  alert(`Please enter a price between ${formatCurrency(minPrice)} and ${formatCurrency(maxPrice)}`);
-                  setUnitPrice('');
                 }
               }}
               placeholder={`Enter amount (${formatCurrency(selectedProduct.cascadeListPrice)} - ${formatCurrency(selectedProduct.cascadeListPrice + selectedProduct.codeiumCoreListPrice)})`}
