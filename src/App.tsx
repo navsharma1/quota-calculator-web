@@ -283,7 +283,13 @@ const App: React.FC = () => {
                 `(with ${discount ? `${discount}% discount` : 
                   `$${(Number(unitPrice) - selectedProduct.cascadeListPrice).toFixed(2)} unit price (${((selectedProduct.codeiumCoreListPrice - (Number(unitPrice) - selectedProduct.cascadeListPrice)) / selectedProduct.codeiumCoreListPrice * 100).toFixed(1)}% discount)`})`}</h4>
               <p className="unit-price">List Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice)}</p>
-              <p className="unit-price">Discounted Price per User: {formatCurrency(selectedProduct.codeiumCoreListPrice * discountMultiplier)}</p>
+              <p className="unit-price">Discounted Price per User: {formatCurrency(
+                selectedProduct.codeiumCoreListPrice * (
+                  discount ? (1 - Number(discount)/100) :
+                  unitPrice ? ((Number(unitPrice) - selectedProduct.cascadeListPrice) / selectedProduct.codeiumCoreListPrice) :
+                  1
+                )
+              )}</p>
               <p>Monthly: {formatCurrency(revenue.codeiumCoreRevenue.monthly)}</p>
               <p>Term Total ({termLength || 0} months): {formatCurrency(revenue.codeiumCoreRevenue.term)}</p>
               <p className="quota-attainment">Term Quota Attainment: {formatCurrency(revenue.codeiumCoreRevenue.quotaAttainment)}</p>
